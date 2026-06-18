@@ -7,7 +7,7 @@ inventory = ["small dagger"]
 gold = 0
 level = 1
 experience = 0
-
+weapon = None   
 
 def clear_screen():
     command = 'cls' if os.name == 'nt' else 'clear'
@@ -76,25 +76,81 @@ def create_character():
     print(f"Your character's stats are: Strength: {strength}, Dexterity: {dexterity}, Constitution: {constitution}, Intelligence: {intelligence}, Wisdom: {wisdom}, Charisma: {charisma}")
     return name, character_class, strength, dexterity, constitution, intelligence, wisdom, charisma
 def use_item(item):
+    global weapon
     if item == 'small dagger':
-        weapon_1 = "small dagger"
-        print("You have equipped the small dagger to your first weapon slot. It is a basic weapon that can be used for close combat. It has a damage of 1d4.")
+        weapon = "small dagger"
+        print("You have equipped the small dagger to your weapon slot. It is a basic weapon that can be used for close combat. It has a damage of 1d4.")
 
 def describe_item(item):
     if item == 'small dagger':
         print("The small dagger is a basic melee weapon. It is lightweight and easy to handle, making it ideal for quick strikes and surprise attacks. It has a damage of 1d4 and can be used for close combat. It is a common weapon among adventurers and can be found in most shops. Value: 1 gold piece.")
+def enter_shop():
+    global gold, inventory
+    print("You enter the shop and see a variety of items for sale. The shopkeeper greets you and asks if you need any help finding anything. You see a small dagger for sale for 1 gold piece, a short sword for 5 gold pieces, a longsword for 10 gold pieces, a greatsword for 20 gold pieces, a bow for 5 gold pieces, and a staff for 5 gold pieces. To buy an item, type 'buy item', to sell an item, type 'sell item', or to leave the shop, type 'leave shop'.")
+    shop_action = input("> ").lower()
+    if shop_action == 'buy item':
+        print("Which item would you like to buy?")
+        item_to_buy = input("> ").lower()
+        if item_to_buy == 'small dagger':   
+            if gold >= 1:
+                inventory.append('small dagger')
+                gold -= 1
+                print("You have bought a small dagger and added it to your inventory.")
+            else:
+                print("You don't have enough gold to buy that item.")
+        elif item_to_buy == 'short sword':
+            if gold >= 5:
+                inventory.append('short sword')
+                gold -= 5
+                print("You have bought a short sword and added it to your inventory.")
+            else:
+                print("You don't have enough gold to buy that item.")
+        elif item_to_buy == 'longsword':
+            if gold >= 10:
+                inventory.append('longsword')
+                gold -= 10
+                print("You have bought a longsword and added it to your inventory.")
+            else:
+                print("You don't have enough gold to buy that item.")
+        elif item_to_buy == 'greatsword':
+            if gold >= 20:
+                inventory.append('greatsword')
+                gold -= 20
+                print("You have bought a greatsword and added it to your inventory.")
+            else:
+                print("You don't have enough gold to buy that item.")
+        elif item_to_buy == 'bow':
+            if gold >= 5:
+                inventory.append('bow')
+                gold -= 5
+                print("You have bought a bow and added it to your inventory.")
+            else:
+                print("You don't have enough gold to buy that item.")
+        elif item_to_buy == 'staff':
+            if gold >= 5:
+                inventory.append('staff')
+                gold -= 5
+                print("You have bought a staff and added it to your inventory.")
+            else:
+                print("You don't have enough gold to buy that item.")
+        else:
+            print("That item is not for sale in the shop.")
 
 def game_main(name, character_class, strength, dexterity, constitution, intelligence, wisdom, charisma):
+    global gold, inventory, level, experience, complete_quest6, weapon
+    complete_quest6 = False
     print(f"Now that you have created your character, {name} the {character_class}, it's time to start your adventure!")
     print("You find yourself in the corner of a small alleyway. The sun is setting, and the city streets are filling with the sounds of adventurers and merchants. You see a group of adventurers standing around a notice board, looking at the various quests posted on the board. You only remember a few things: your name, class, stats, and the fact that you are an adventurer. You have no memory of how you got here or what your past is. You have no items in your inventory beside a small dagger.")
     while True:
-        print("What do you do? (type 'stats' to check your stats, 'inventory' to check your inventory, or 'notice board' to approach the notice board to see the quests available.)")
+        print("What do you do? (type 'stats' to check your stats, 'inventory' to check your inventory,'notice board' to approach the notice board to see the quests available, or 'shop' to go to the shop to buy items.)")
         action = input("> ").lower()
+        if action == "shop":
+            enter_shop()
         if action == 'stats':
             print(f"Your stats are: Strength: {strength}, Dexterity: {dexterity}, Constitution: {constitution}, Intelligence: {intelligence}, Wisdom: {wisdom}, Charisma: {charisma}, and you have {gold} gold pieces.")
         if action == 'inventory':
             if len(inventory) == 0:
-                print("Your inventory is currently empty.")
+                print("Your inventory is currently empty.") 
             else:
                 print("Your inventory contains:")
                 for items in inventory:
@@ -163,7 +219,7 @@ def game_main(name, character_class, strength, dexterity, constitution, intellig
                 else:
                     print("You have chosen to gather rare herbs for a local alchemist. This is an F-Tier quest, which means it is very easy and will require no skill or preparation. You will need to find the herbs, gather them, and bring them back to the alchemist.")
                     complete_quest6 = False
-                    print("To get more information about the quest, find the alchemist. To see the quest requirements, type 'quest requirements'.")
+                    print("To get more information about the quest, type 'find the alchemist'. To see the quest requirements, type 'quest requirements'.")
                     action_quest6 = input("> ").lower()
                     if action_quest6 == 'quest requirements':
                         quest_requirements_6 = ["Find the alchemist", "Gather 5 rare herbs", "Bring the herbs back to the alchemist"]
@@ -179,11 +235,16 @@ def game_main(name, character_class, strength, dexterity, constitution, intellig
                             print("What do you do? (type 'attack goblins' to attack the goblins, 'sneak past goblins' to try to sneak past the goblins, or 'run away' to run away from the goblins.)")
                             goblin_action = input("> ").lower()
                             if goblin_action == 'attack goblins':
-                                print("You decide to attack the goblins head-on. You draw your small dagger and charge at them. The goblins are caught off guard by your sudden attack and are quickly defeated. You gather the herbs and make your way back to the alchemist.")
-                                complete_quest6 = True
-                                experience += 100
-                                gold += 5
-                                check_level_up()
+                                if weapon is None:
+                                    print("You don't have a weapon equipped, so you are at a disadvantage in combat. The goblins easily overpower you and you are forced to retreat. You fail the quest and don't gain any experience.")
+                                else: 
+                                    print("You decide to attack the goblins head-on. You draw your small dagger and charge at them. The goblins are caught off guard by your sudden attack and are quickly defeated. You gather the herbs and make your way back to the alchemist.")
+                                    if random.randint(1, 4) + strength > 10:
+                                        complete_quest6 = True
+                                        experience += 100
+                                        gold += 5
+                                        check_level_up()
+                            
                             elif goblin_action == 'sneak past goblins':
                                 print("You decide to try to sneak past the goblins. You carefully make your way around them, trying to stay hidden in the shadows. The goblins are focused on their task and don't notice you as you sneak past them. You successfully gather the herbs and make your way back to the alchemist.")
                                 if random.randint(1, 6) + dexterity > 10:  
